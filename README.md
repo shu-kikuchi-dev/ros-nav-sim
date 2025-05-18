@@ -13,7 +13,7 @@ SLAMアルゴリズムに基づいた、自己位置推定・地図作成・経�
 事前にDocker Desktopをインストールする必要があります。
 - [Docker Desktop](https://docs.docker.com/get-started/get-docker/)
 
-Docker Desktopをインストールが完了したら、Docker Desktopを起動した状態で、コマンドプロンプトにて以下のコマンドを実行します。
+Docker Desktopをインストールが完了したら、Docker Desktopを起動した状態で、コマンドプロンプトにて以下のコマンドを実行します（'<>'内は任意の値に置き換えてください）。
 ```bash
 docker run --name <任意のコンテナ名> -v <マウントしたいローカル環境のパス>:/home/ubuntu/catkin_ws:cached -p <任意のホストポート>:<任意のコンテナポート> --shm-size=<共有メモリディレクトリのサイズ> tiryoh/ros-desktop-vnc:noetic
 ```
@@ -45,7 +45,7 @@ sudo apt update
 sudo apt upgrade
 ```
 
-## プログラムの実行
+## 実行
 仮想空間上でターミナルを起動し、以下のコンマドをすべて個別に実行します。
 
 roscoreを起動します。
