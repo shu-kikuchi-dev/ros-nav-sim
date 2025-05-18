@@ -1,0 +1,37 @@
+<launch>
+    <!--argments-->
+    <arg name="model" default="$(find LidarRobot1_description)/urdf/LidarRobot1.urdf" />
+    <arg name="gui" default="true" />
+    <arg name="rvizconfig" default="$(find LidarRobot1_description)/rviz/urdf.rviz" />
+    <arg name="paused" default="false" />
+    <arg name="use_sim_time" default="true" />
+    <arg name="headless" default="false" />
+    <arg name="debug" default="false" />
+    <arg name="use_tf_static" default="false" />
+
+    <!--parameters-->
+    <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
+    <param name="use_gui" value="$(arg gui)" />
+
+    <!--nodes-->
+    <!--if joints with types except for fixed is existing, turn on joint_state_publisher_gui. if it is not, turn on just joint_state_publisher.-->
+    <node if="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" />
+    <node unless="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+        <param name="use_tf_static" value="$(arg use_tf_static)" />
+    </node>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -model LidarRobot1_description -param robot_description" />
+
+    <!--includings-->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find LidarRobot1_gazebo)/worlds/clearpath_playpen.world" />
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="paused" value="$(arg paused)" />
+        <arg name="use_sim_time" value="$(arg use_sim_time)" />
+        <arg name="headless" value="$(arg headless)" />
+    </include>
+    <include file="$(find LidarRobot1_control)/launch/LidarRobot1_control_for_sim.launch" />
+    <include file="$(find LidarRobot1_bringup)/launch/sensors/lrf_merger.launch" />
+</launch>

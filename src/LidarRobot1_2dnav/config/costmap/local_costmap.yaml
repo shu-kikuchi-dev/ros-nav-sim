@@ -1,0 +1,10 @@
+local_costmap:
+  global_frame: odom # you can set base_link but it is not appropriate
+  robot_base_frame: base_link
+  update_frequency: 5.0 # defined in Hz
+  publish_frequency: 5.0 # defined in Hz
+  static_map: false
+  rolling_window: true
+  width: 3.0
+  height: 3.0
+  resolution: 0.10 # defined 1 cell resolution in meters

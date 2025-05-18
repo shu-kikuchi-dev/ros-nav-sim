@@ -1,0 +1,28 @@
+<launch>
+    <!--argments-->
+    <arg name="model" default="$(find LidarRobot1_description)/urdf/LidarRobot1.urdf" />
+    <arg name="paused" default="false" />
+    <arg name="use_sim_time" default="true" />
+    <arg name="gui" default="true" />
+    <arg name="headless" default="false" />
+    <arg name="debug" default="false" />
+
+    <!--includings-->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find LidarRobot1_gazebo)/worlds/clearpath_playpen.world" />
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="paused" value="$(arg paused)" />
+        <arg name="use_sim_time" value="$(arg use_sim_time)" />
+        <arg name="headless" value="$(arg headless)" />
+    </include>
+    <include file="$(find LidarRobot1_control)/launch/LidarRobot1_control.launch" />
+    <include file="$(find LidarRobot1_bringup)/launch/sensors/lrf_merger.launch" />
+
+    <!--parameters-->
+    <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
+    <param name="use_gui" value="$(arg gui)" />
+
+    <!--nodes-->
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -model LidarRobot1_description -param robot_description" />
+</launch>

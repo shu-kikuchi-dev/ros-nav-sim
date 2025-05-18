@@ -1,0 +1,5 @@
+<launch>
+    <rosparam file="$(find LidarRobot1_control)/config/controller.yaml" />
+
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" output="screen" ns="/LidarRobot1" args="joint_state_controller diff_drive_controller" />
+</launch>

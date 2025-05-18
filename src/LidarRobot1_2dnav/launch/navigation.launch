@@ -1,0 +1,44 @@
+<launch>
+    <master auto="start" />
+    <!--map server-->
+    <arg name="map_file" default="$(find LidarRobot1_2dnav)/map/LidarRobot1_map0.yaml" />
+    <node name="mapserver" pkg="map_server" type="map_server" args="$(arg map_file)">
+        <param name="frame_id" value="map" />
+    </node>
+
+    <!--amcl-->
+    <include file="$(find LidarRobot1_2dnav)/launch/amcl_diff.launch" />
+
+    <!--move base-->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <!--cost map-->
+        <rosparam file="$(find LidarRobot1_2dnav)/config/costmap/costmap_common.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find LidarRobot1_2dnav)/config/costmap/costmap_common.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find LidarRobot1_2dnav)/config/costmap/local_costmap.yaml" command="load" />
+        <rosparam file="$(find LidarRobot1_2dnav)/config/costmap/global_costmap.yaml" command="load" />
+
+        <!--base global planner-->
+        <rosparam file="$(find LidarRobot1_2dnav)/config/planner/global/navfn_planner.yaml" command="load" />
+        <!--base local planner-->
+        <rosparam file="$(find LidarRobot1_2dnav)/config/planner/local/trajectory_planner.yaml" command="load" />
+        <!--recovery-->
+        <rosparam file="$(find LidarRobot1_2dnav)/config/planner/recovery_behaviors.yaml" command="load" />
+
+        <!--move base-->
+        <param name="controller_frequency" value="5.0" />
+        <param name="controller_patience" value="15.0" />
+        <param name="max_planning_retries" value="10" />
+        <param name="oscillation_timeout" value="10.0" />
+        <param name="clearing_rotation_allowed" value="true" />
+
+        <!--remap cmd_vel and odom topics-->
+        <remap from="cmd_vel" to="/LidarRobot1/diff_drive_controller/cmd_vel" />
+        <remap from="odom" to="/LidarRobot1/diff_drive_controller/odom" />
+    </node>
+
+    <node name="rviz" pkg="rviz" type="rviz" required="true" args="-d $(find LidarRobot1_2dnav)/rviz/navigation.rviz" />
+
+    <node name="baseFootprint_staticTransformPublisher" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 map base_footprint 100" />
+    <node name="leftWheel_staticTransformPublisher" pkg="tf" type="static_transform_publisher" args="0.2 0.25 0.07 0 0 0 base_link leftWheel_link 100" />
+    <node name="rightWheel_staticTransformPublisher" pkg="tf" type="static_transform_publisher" args="0.2 -0.25 0.07 0 0 0 base_link rightWheel_link 100" />
+</launch>

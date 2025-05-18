@@ -1,0 +1,6 @@
+<launch>
+    <node name="amcl" pkg="amcl" type="amcl" output="screen">
+        <remap from="scan" to="/scan" />
+        <rosparam file="$(find LidarRobot1_2dnav)/config/amcl/amcl_diff.yaml" command="load" />
+    </node>
+</launch>
